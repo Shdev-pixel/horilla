@@ -69,6 +69,13 @@ class AssetFormView(HorillaFormView):
     dynamic_create_fields = [("asset_lot_number_id", DynamicCreateBatchNo)]
     template_name = "cbv/asset/asset_form.html"
 
+    def init_form(self, *args, data={}, files={}, instance=None, **kwargs):
+        form = super().init_form(*args, data=data, files=files, instance=instance, **kwargs)
+        if "asset_lot_number_id" in form.fields:
+            if "onchange" in form.fields["asset_lot_number_id"].widget.attrs:
+                del form.fields["asset_lot_number_id"].widget.attrs["onchange"]
+        return form
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         asset_category_id = self.kwargs.get("asset_category_id")
