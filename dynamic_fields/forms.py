@@ -136,10 +136,11 @@ def init_override(self: forms.ModelForm, *args, **kwargs):
             if self._meta.fields is not None:
                 self._meta.fields.append(df.field_name)
 
-    request = getattr(_thread_locals, "request")
+    request = getattr(_thread_locals, "request", None)
     if (
         # self._meta.model in DF_ALLOWED_MODELS and
         self._meta.model not in DF_NOT_ALLOWED_MODELS
+        and request
         and request.user.has_perm("dynamic_fields.add_dynamicfield")
     ):
         self.df_user_has_change_perm = request.user.has_perm(

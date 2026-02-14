@@ -1,6 +1,26 @@
 <div id="formContainer">
+    <div class="oh-modal" id="dynamicModalBatch" role="dialog" aria-labelledby="dynamicModalBatch" aria-hidden="true">
+        <div class="oh-modal__dialog" id="dynamicModalBatchBody"></div>
+    </div>
     {% include "generic/horilla_form.html" %}
 </div>
+
+<form hidden id="dynamicBatchForm"
+    hx-get="{% url 'asset-batch-dynamic-create' %}?dynamic_field=asset_lot_number_id"
+    hx-target="#dynamicModalBatchBody">
+    <button type="submit" id="dynamicBatchButton"
+        onclick="$('#dynamicModalBatch').addClass('oh-modal--show');">
+    </button>
+</form>
+
+<form hidden id="reload-field-batch{{ view_id }}"
+    hx-get="{% url 'reload-field' %}?form_class_path={{ form_class_path }}&dynamic_field=asset_lot_number_id"
+    hx-target="#dynamic_field_asset_lot_number_id">
+    <input type="text" name="dynamic_initial" data-dynamic-field="asset_lot_number_id">
+    <input type="text" name="view_id" value="{{ view_id }}">
+    <button class="reload-field" data-target="asset_lot_number_id">
+    </button>
+</form>
 
 <script>
     function toggleNotify(elm) {
@@ -14,5 +34,21 @@
     }
     $(document).ready(function(){
         toggleNotify($("#id_expiry_date"))
+
+        // Manual listener for asset_lot_number_id dynamic create
+        $("#{{ view_id }}Form [name=asset_lot_number_id]").change(function (e) {
+            var values = $(this).val();
+            if (!values) {
+                values = ""
+            }
+            if (values == "dynamic_create") {
+                $("#dynamicBatchButton").click();
+                $(this).val("");
+            } else if (values.includes("dynamic_create")) {
+                // Should not happen for single select, but for completeness
+                let index = values.indexOf("dynamic_create");
+                // handle array ... (omitted for single select)
+            }
+        });
     })
 </script>

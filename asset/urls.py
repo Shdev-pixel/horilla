@@ -247,6 +247,11 @@ urlpatterns = [
         name="asset-batch-number-creation",
     ),
     path(
+        "asset-batch-dynamic-create/",
+        asset_batch_no.DynamicCreateBatchNo.as_view(),
+        name="asset-batch-dynamic-create",
+    ),
+    path(
         "asset-batch-view/",
         asset_batch_no.AssetBatchNoView.as_view(),
         name="asset-batch-view",

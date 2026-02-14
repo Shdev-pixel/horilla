@@ -66,8 +66,21 @@ class AssetFormView(HorillaFormView):
     form_class = AssetForm
     model = Asset
     new_display_title = _("Asset Creation")
-    dynamic_create_fields = [("asset_lot_number_id", DynamicCreateBatchNo)]
     template_name = "cbv/asset/asset_form.html"
+
+    def init_form(self, *args, data={}, files={}, instance=None, **kwargs):
+        form = super().init_form(*args, data=data, files=files, instance=instance, **kwargs)
+        if "asset_lot_number_id" in form.fields:
+            field = form.fields["asset_lot_number_id"]
+            if "onchange" in field.widget.attrs:
+                del field.widget.attrs["onchange"]
+
+            choices = list(field.choices)
+            # Filter out 'create' from choices
+            choices = [choice for choice in choices if choice[0] != "create"]
+            choices.append(("dynamic_create", _("Dynamic create")))
+            field.choices = choices
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

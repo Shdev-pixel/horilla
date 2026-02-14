@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     "report",
     "whatsapp",
     "horilla_ldap",
+    "dynamic_fields",
 ]
 
 # ========================================
